@@ -8,6 +8,7 @@ import axios from "axios"
 import { serverUrl } from '../App';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { auth } from '../../firebase';
+import { } from "react-spinners"
 function SignUp(){
     const primaryColor = "#ff4d2d";
     const hoverColor = "#e64323";
@@ -21,15 +22,19 @@ function SignUp(){
     const[password,setPassword]=useState("")
     const[mobile,setMobile]=useState("")
     const[err,setErr]=useState("")
+    const[loading,setLoading]=useState(false)
     const handleSignUp=async () => {
+        setLoading(true)
         try{
             const result=await axios.post('${serverUrl}/api/auth/signup',{
                 fullName,email,password,mobile,role
             },{withCredentials:true})
             console.log(result)
             setErr("")
+            setLoading(false)
         } catch (error){
             setErr(error?.response?.data?.message)
+            setLoading(false)
         }
     }
 
@@ -107,8 +112,9 @@ function SignUp(){
                     </div>
                 </div>
 
-            <button className={'w-full mt-4 flex items-centre justify-centre gap-2 border rounded-lg px-4 py-2 transition duration-200 bg-[#ff4d2d] text-white hover:bg-[#e64323] curser-pointer'} onClick={handleSignUp}> 
-                SignUp
+            <button className={'w-full mt-4 flex items-centre justify-centre gap-2 border rounded-lg px-4 py-2 transition duration-200 bg-[#ff4d2d] text-white hover:bg-[#e64323] curser-pointer'} onClick={handleSignUp} disabled={loading}> 
+            {loading?<clipLoader size={20}/>:"Sign Up "} 
+                
             </button>
             {err && <p className='text-red-500 text-centre my[10px]'>*{err}</p>}
 
